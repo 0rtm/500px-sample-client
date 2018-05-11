@@ -19,7 +19,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="237" height="137"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CRN-Fx-c2p">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CRN-Fx-c2p">
                         <rect key="frame" x="5" y="5" width="227" height="127"/>
                     </imageView>
                 </subviews>

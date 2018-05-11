@@ -21,7 +21,8 @@ struct Networking {
     func getPage(completion : @escaping (Error?, Page?)->()) {
 
         let url = URL(string: "https://api.500px.com/v1/photos")!
-        let params = ["consumer_key": consumerKey]
+        let params = ["image_size": "4",
+                      "consumer_key": consumerKey]
 
         Alamofire.request(url, method: .get, parameters: params, headers: nil)
             .validate()

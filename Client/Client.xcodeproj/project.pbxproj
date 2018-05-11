@@ -20,6 +20,8 @@
 		ACBF934620A50362008E3F26 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF934520A50362008E3F26 /* Photo.swift */; };
 		ACBF934820A50697008E3F26 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF934720A50697008E3F26 /* Page.swift */; };
 		ACBF934D20A51356008E3F26 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF934C20A51356008E3F26 /* Image.swift */; };
+		ACBF935220A520AD008E3F26 /* PreservingAspectRatioLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF935120A520AD008E3F26 /* PreservingAspectRatioLayout.swift */; };
+		ACBF935420A53572008E3F26 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF935320A53572008E3F26 /* Row.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,8 @@
 		ACBF934520A50362008E3F26 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		ACBF934720A50697008E3F26 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		ACBF934C20A51356008E3F26 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
+		ACBF935120A520AD008E3F26 /* PreservingAspectRatioLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreservingAspectRatioLayout.swift; sourceTree = "<group>"; };
+		ACBF935320A53572008E3F26 /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		C08D01CD4227410CA7023613 /* Pods_Client.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Client.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -127,6 +131,8 @@
 			isa = PBXGroup;
 			children = (
 				AC01689120A3CA9E00919EE9 /* Networking.swift */,
+				ACBF935120A520AD008E3F26 /* PreservingAspectRatioLayout.swift */,
+				ACBF935320A53572008E3F26 /* Row.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -267,10 +273,12 @@
 				ACBF934620A50362008E3F26 /* Photo.swift in Sources */,
 				ACBF934D20A51356008E3F26 /* Image.swift in Sources */,
 				ACBF933E20A4FED0008E3F26 /* PhotoCollectionViewCell.swift in Sources */,
+				ACBF935220A520AD008E3F26 /* PreservingAspectRatioLayout.swift in Sources */,
 				AC01687D20A3C80700919EE9 /* AppDelegate.swift in Sources */,
 				ACBF934220A4FF45008E3F26 /* PhotosViewController.swift in Sources */,
 				ACBF934820A50697008E3F26 /* Page.swift in Sources */,
 				AC01689220A3CA9E00919EE9 /* Networking.swift in Sources */,
+				ACBF935420A53572008E3F26 /* Row.swift in Sources */,
 				ACBF934420A4FF75008E3F26 /* PhotosViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -419,7 +427,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 768KTYFHEL;
 				INFOPLIST_FILE = Client/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tselikov.500px.Client;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -435,7 +446,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 768KTYFHEL;
 				INFOPLIST_FILE = Client/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tselikov.500px.Client;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

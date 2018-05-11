@@ -11,6 +11,7 @@ import UIKit
 
 class PhotosViewModel: NSObject {
 
+    var aspects: [CGFloat] = [4.0, 4.0, 2.0, 2.0]// 1.0, 2.0, 1.0, 2.0, 2.0]// 1.0, 1.0, 1.0, 2.0, 2.0]//[1.0, 2.0, 1.1, 1.2, 0.5, 2.0, 1.3, 3.0, 0.1]
 
     var photos: [Photo] = []
 
