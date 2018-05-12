@@ -69,13 +69,11 @@ class PreservingAspectRatioLayout: UICollectionViewLayout {
         var row = Row()
         row.maxH = 150
         row.maxW = contentWidth
-        row.spacer = 8.0
-
+        row.spacer = 4.0
 
 
         for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
 
-//
             let indexPath = IndexPath(item: item, section: 0)
 
             let aspectRatio = delegate.collectionView(collectionView, aspectRatioForCellAtIndexPath: indexPath)
@@ -83,83 +81,41 @@ class PreservingAspectRatioLayout: UICollectionViewLayout {
             row.items.append((indexPath, aspectRatio))
 
             if row.isRowComplete() {
-//
                 let layouts = row.layout()
-//
                 for layout in layouts {
                     let attributes = UICollectionViewLayoutAttributes(forCellWith: layout.0)
                     attributes.frame = layout.1
                     attributes.frame.origin.y = currentRowH
                     cache.append(attributes)
                 }
-                currentRowH += layouts.first!.1.height
+
+                currentRowH += row.rowH()
                 row = Row()
                 row.maxH = 150
                 row.maxW = contentWidth
-                row.spacer = 8.0
+                row.spacer = 4.0
                 print("complete")
 
 
             } else {
-                print("no")
+
+                if item == collectionView.numberOfItems(inSection: 0)-1 {
+                    print("last")
+
+                    let layouts = row.layoutIncompleteRow()
+                    //
+                    for layout in layouts {
+                        let attributes = UICollectionViewLayoutAttributes(forCellWith: layout.0)
+                        attributes.frame = layout.1
+                        attributes.frame.origin.y = currentRowH
+                        cache.append(attributes)
+                    }
+                }
             }
-
-
-//
-//
-//            let maxH = delegate.maxHeightForRow()
-//
-//            let cH = min(maxH, max(maxH/aspectRatio, maxH*aspectRatio))
-//            let cW = min(contentWidth, maxH*aspectRatio)
-//
-//            let cellX: CGFloat
-//            let cellY: CGFloat
-//
-//            if (spaceLeftInRow - spacing > cW) {
-//                cellX = contentWidth - spaceLeftInRow - spacing
-//                spaceLeftInRow -= (cW + spacing)
-//
-//               //spaceLeftInRow + spacing
-//                cellY = currentRowH
-//
-//            } else {
-//                spaceLeftInRow = contentWidth
-//                currentRowH += (maxH + spacing)
-//
-//                cellX = contentWidth - spaceLeftInRow
-//                cellY = currentRowH
-//            }
-
-
-//            // 4
-//            let photoHeight = CGFloat(100.0)//delegate.collectionView(collectionView, heightForPhotoAtIndexPath: indexPath)
-//            let height = cellPadding * 2 + photoHeight
-//            let frame = CGRect(x: xOffset[column], y: yOffset[column], width: columnWidth, height: height)
-//            let insetFrame = frame.insetBy(dx: cellPadding, dy: cellPadding)
-//
-//            // 5
-
-//            let frame = CGRect(x: cellX, y: cellY, width: cW, height: cH)
-//
-//            let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-//            attributes.frame = frame
-//            cache.append(attributes)
-//
-//            // 6
             contentHeight = max(contentHeight, currentRowH)
-//            yOffset[column] = yOffset[column] + height
-//
-//            column = column < (numberOfColumns - 1) ? (column + 1) : 0
         }
     }
 
-    var currentGrid:[CGFloat] = []
-
-//    func layoutGrid(){
-//
-//        if ()
-//
-//    }
 
 
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
@@ -178,5 +134,9 @@ class PreservingAspectRatioLayout: UICollectionViewLayout {
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         return cache[indexPath.item]
     }
-    
+
+    override func invalidateLayout() {
+        cache = []
+        contentHeight = 0
+    }
 }

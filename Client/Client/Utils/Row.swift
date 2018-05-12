@@ -26,91 +26,72 @@ class Row {
 
     func isRowComplete() -> Bool {
 
-        //let nexMaxW = maxW/CGFloat(items.count)
-        //var spaceLeft = nexMaxW
-
         layoutItems = []
 
-        let totlalW = items.map({$0.1 * maxW}).reduce(0, +)
-        let scaleFactorToFitW = maxW/totlalW
+        let spacing =  2 * spacer + (spacer * CGFloat(items.count-1))
+        let availW = maxW - spacing
 
-        var spaceLeft = maxW
-        var offset: CGFloat = 0
+        let totlalW = items.map({$0.1 * availW}).reduce(0, +)
+        let scaleFactorToFitW = availW/totlalW
 
-        for (index,item) in items.enumerated() {
+        var offset: CGFloat = spacer
 
-        //let itemW = //maxW/scaleFactorToFitW
-        let itemH =  maxW * scaleFactorToFitW//itemW/item.1 // aspect ratio
+        for item in items {
+
+        let itemH =  availW * scaleFactorToFitW//itemW/item.1 // aspect ratio
         let itemW = itemH*item.1
-//            let itemW = nexMaxW///item.1
-//
 
-             layoutItems.append((item.0, CGRect(x: offset, y: 0, width: itemW, height: itemH)))
-offset += itemW
-//            if (offset + itemW < maxW) {
-//                spaceLeft += itemW
-//            }
-//
-//            let itemH = itemW/item.1
-//
+            layoutItems.append((item.0, CGRect(x: offset, y: 0, width: itemW, height: itemH)))
+            offset += (itemW + spacer)
 
-
-            if (itemH > maxH) {
+            if (itemH > maxH - (2 * spacer)) {
                 return false
             }
 
         }
-        //layoutItems = []
-        return true
-
-
-//
-//        if items.count == 1 {
-//            return avaliableSpace/items.first!.1 < maxH
-//        }
-//
-//        if items.count == 2 {
-//
-//            let h1 = avaliableSpace/items.first!.1
-//            let h2 = avaliableSpace/items[1].1
-//
-//            return min(h1, h2)
-//        }
-
         return true
     }
 
     func layout() -> [(IndexPath, CGRect)] {
-////
-//        let nexMaxW = maxW///CGFloat(items.count)
-//        var spaceLeft = nexMaxW
-//
-//        for item in items {
-//
-//            let itemW = item.1*nexMaxW
-//
-//            if (spaceLeft - itemW > 0) {
-//                spaceLeft -= itemW
-//            }
-//
-//            let itemH = itemW/item.1
-//
-//            layoutItems.append((item.0,CGRect(x: spaceLeft, y: 0, width: itemW, height: itemH)))
-//        }
         return layoutItems
-        //layoutItems = []
     }
 
-    func minH() -> CGFloat {
+    func layoutIncompleteRow() ->  [(IndexPath, CGRect)] {
+        layoutItems = []
 
-        var minH = hForItem(item: items.first!)
+        let spacing =  2 * spacer + (spacer * CGFloat(items.count-1))
+        let availW = maxW - spacing
+        let availH = maxH - (2 * spacer)
+
+
+//        let totlalW = items.map({$0.1 * availW}).reduce(0, +)
+//        let scaleFactorToFitW = availW/totlalW
+//
+//        let maxHwithScaledW = items.map({availW * $0.1}).max()!
+//
+//
+//
+//        let scaleFactorToFitH = availH/(maxHwithScaledW)
+//
+//        let sclateToFitXandY = max(scaleFactorToFitW, scaleFactorToFitH)
+//
+       var offset: CGFloat = spacer
+
         for item in items {
-            if hForItem(item: item) < minH {
-                minH = hForItem(item: item)
-            }
+
+            let aspectRatio = item.1
+
+            let cH = min(availH, max(availH/aspectRatio, availH*aspectRatio))
+            let cW = cH * aspectRatio
+            layoutItems.append((item.0, CGRect(x: offset, y: 0, width: cW, height: cH)))
+            offset += (cW + spacer)
         }
 
-        return minH
+        return layoutItems
+    }
+
+    func rowH() -> CGFloat {
+        return (layoutItems.first?.1.height)!+spacer
     }
 
     func hForItem(item: Item) ->CGFloat {
