@@ -21,10 +21,18 @@ class PhotosViewController: UIViewController {
         super.viewDidLoad()
         photosModel = PhotosViewModel()
         setupCollectionView()
+        title = "Popular"
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        collectionView.collectionViewLayout.invalidateLayout()
     }
 
     fileprivate func setupCollectionView() {
-        collectionView.register(PhotoCollectionViewCell.nib, forCellWithReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier)//(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier)
+        collectionView.register(PhotoCollectionViewCell.nib,
+                                forCellWithReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier)
+        
         collectionView.dataSource = self
         collectionView.delegate = self
         if let layout = collectionView.collectionViewLayout as? PreservingAspectRatioLayout {
@@ -35,17 +43,11 @@ class PhotosViewController: UIViewController {
             self?.collectionView.reloadData()
         })
     }
-
-    func colorForCell(path: IndexPath) -> UIColor {
-        return path.row % 2 == 0 ? UIColor.red : UIColor.cyan
-    }
-
 }
 
 
 extension PhotosViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //return photosModel.aspects.count//
         return photosModel.photos.count
     }
 
@@ -56,9 +58,7 @@ extension PhotosViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
 
-        cell.backgroundColor = colorForCell(path: indexPath)
-     let photo = photosModel.photos[indexPath.row]
-//
+        let photo = photosModel.photos[indexPath.row]
         if let photoURLString = photo.images.first?.httpsURL {
               cell.imageView.af_setImage(withURL: photoURLString)
         }
