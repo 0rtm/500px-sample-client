@@ -14,18 +14,16 @@ class PhotosViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
 
     fileprivate let rowH = 100.0
-
     var photosModel:PhotosViewModel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        photosModel = PhotosViewModel()
         setupCollectionView()
         title = "Popular"
     }
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         collectionView.collectionViewLayout.invalidateLayout()
     }
 
@@ -39,47 +37,61 @@ class PhotosViewController: UIViewController {
             layout.delegate = self
         }
 
-        photosModel.loadPage(completion: {[weak self] in
-            self?.collectionView.reloadData()
-        })
+        photosModel = PhotosViewModel(collectionView: collectionView)
+        photosModel.loadPhotos()
+    }
+
+    fileprivate func requestMorePhotos() {
+        photosModel.loadMorePhotos()
     }
 }
 
 
 extension PhotosViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photosModel.photos.count
-    }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return photosModel.numberOfSections
+    }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return photosModel.numberOfPhotosInSection(section)
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
 
-        let photo = photosModel.photos[indexPath.row]
+        let photo = photosModel.photo(atIndexPath: indexPath)
+
         if let photoURLString = photo.images.first?.httpsURL {
               cell.imageView.af_setImage(withURL: photoURLString)
         }
 
         return cell
     }
+
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+
+        let isLastSection = indexPath.section == photosModel.numberOfSections - 1
+        let isLastRow = indexPath.row == photosModel.numberOfPhotosInSection(indexPath.section) - 1
+
+        let isLastCell = isLastSection && isLastRow
+
+        if isLastCell {
+            requestMorePhotos()
+        }
+    }
 }
 
 extension PhotosViewController: PreservingAspectRatioLayoutDelegate {
+
     func maxHeightForRow() -> CGFloat {
-
-
         return CGFloat(rowH)
     }
 
     func collectionView(_ collectionView: UICollectionView,
                    aspectRatioForCellAtIndexPath indexPath:IndexPath) -> CGFloat {
-
-       // return photosModel.aspects[indexPath.row]
-
-        let photo = photosModel.photos[indexPath.row]
+        let photo = photosModel.photo(atIndexPath: indexPath)
         return CGFloat(photo.aspectRatio)
     }
 
@@ -87,15 +99,3 @@ extension PhotosViewController: PreservingAspectRatioLayoutDelegate {
         return 4.0
     }
 }
-
-//extension PhotosViewController: UICollectionViewDelegateFlowLayout {
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//
-//        let photo = photosModel.photos[indexPath.row]
-//
-//        let asspectedW = rowH * photo.aspectRatio
-//
-//        return CGSize(width: asspectedW, height: rowH)
-//    }
-//}

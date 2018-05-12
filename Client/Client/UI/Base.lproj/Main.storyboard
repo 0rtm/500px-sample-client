@@ -21,7 +21,7 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="g6f-1O-TeL">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewLayout key="collectionViewLayout" id="bR6-Wp-Cgx" customClass="PreservingAspectRatioLayout" customModule="Client" customModuleProvider="target"/>
+                                <collectionViewLayout key="collectionViewLayout" id="taY-kJ-NRq" customClass="PreservingAspectRatioLayout" customModule="Client" customModuleProvider="target"/>
                                 <cells/>
                             </collectionView>
                         </subviews>

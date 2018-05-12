@@ -28,3 +28,10 @@ extension Photo {
         return Double(width)/Double(height)
     }
 }
+
+extension Photo: Equatable {
+    static func == (lhs: Photo, rhs: Photo) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+}

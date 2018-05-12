@@ -2,20 +2,24 @@ PODS:
   - Alamofire (4.7.2)
   - AlamofireImage (3.3.1):
     - Alamofire (~> 4.5)
+  - Dwifft (0.8)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
   - AlamofireImage (~> 3.3)
+  - Dwifft
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - AlamofireImage
+    - Dwifft
 
 SPEC CHECKSUMS:
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlamofireImage: 3b35b586853abaf94ca1250f4e94cff3c21a4c0d
+  Dwifft: 463e61d07322fdf83b32ee6975ca1b20708db746
 
-PODFILE CHECKSUM: 2ae6f4bd839d0449d1a350b43d084ec7df93e0ac
+PODFILE CHECKSUM: 97f9c91ca6fe350a191ce2fb20c507c0d140e744
 
 COCOAPODS: 1.5.0
