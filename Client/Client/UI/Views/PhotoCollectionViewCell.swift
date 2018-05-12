@@ -14,10 +14,19 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     static let nib = UINib(nibName: "PhotoCollectionViewCell", bundle: nil)
 
     @IBOutlet weak var imageView: UIImageView!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
+    override func prepareForReuse() {
+        imageView.af_cancelImageRequest()
+        imageView.image = nil
+    }
+
+    func configureFor(photo: Photo) {
+        if let photoURLString = photo.images.first?.httpsURL {
+            imageView.af_setImage(withURL: photoURLString)
+        }
+    }
 }

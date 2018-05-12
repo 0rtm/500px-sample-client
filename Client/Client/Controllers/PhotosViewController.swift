@@ -62,11 +62,8 @@ extension PhotosViewController: UICollectionViewDelegate, UICollectionViewDataSo
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
 
         let photo = photosModel.photo(atIndexPath: indexPath)
-
-        if let photoURLString = photo.images.first?.httpsURL {
-              cell.imageView.af_setImage(withURL: photoURLString)
-        }
-
+        cell.configureFor(photo: photo)
+        
         return cell
     }
 
