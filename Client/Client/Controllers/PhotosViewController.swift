@@ -13,8 +13,10 @@ class PhotosViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
 
-    fileprivate let rowH = 100.0
-    var photosModel:PhotosViewModel!
+    fileprivate var photosModel: PhotosViewModel!
+    fileprivate var selectedPhoto: Photo?
+
+    fileprivate let showPreviewSegueId = "showPreview"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +27,17 @@ class PhotosViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showPreviewSegueId {
+            guard let navVC = (segue.destination) as? UINavigationController,
+                let previewVC = navVC.viewControllers.first as? PhotoViewerViewController else {
+                return
+            }
+            previewVC.photosModel = photosModel
+            previewVC.selectedPhoto = selectedPhoto
+        }
     }
 
     fileprivate func setupCollectionView() {
@@ -78,16 +91,23 @@ extension PhotosViewController: UICollectionViewDelegate, UICollectionViewDataSo
             requestMorePhotos()
         }
     }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedPhoto = photosModel.photo(atIndexPath: indexPath)
+        performSegue(withIdentifier: showPreviewSegueId, sender: self)
+    }
 }
+
 
 extension PhotosViewController: PreservingAspectRatioLayoutDelegate {
 
     func maxHeightForRow() -> CGFloat {
-        return CGFloat(rowH)
+        return 160.0
     }
 
     func collectionView(_ collectionView: UICollectionView,
                    aspectRatioForCellAtIndexPath indexPath:IndexPath) -> CGFloat {
+        
         let photo = photosModel.photo(atIndexPath: indexPath)
         return CGFloat(photo.aspectRatio)
     }

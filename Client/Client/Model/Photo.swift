@@ -15,6 +15,7 @@ struct Photo: Decodable {
     let name: String
     let width: Int
     let height: Int
+    let iso: String?
 
     let images: [Image]
 }
@@ -27,11 +28,25 @@ extension Photo {
     var aspectRatio: Double {
         return Double(width)/Double(height)
     }
+
+    var imageURL: URL? {
+         return images.first?.httpsURL
+    }
 }
 
 extension Photo: Equatable {
     static func == (lhs: Photo, rhs: Photo) -> Bool {
         return lhs.id == rhs.id
     }
+}
+
+extension Photo: TablePresentable {
+
+    func items() -> [TablePresentable.TableItem] {
+        let mirror = Mirror.init(reflecting: self)
+        let items = mirror.children.compactMap( { ($0.label!, String(describing: $0.value)) } )
+        return items
+    }
 
 }
+

@@ -25,7 +25,6 @@ class PhotosViewModel: NSObject {
     // Photos
     fileprivate var photos: [Photo]
 
-
     public init(collectionView: UICollectionView) {
         self.collectionView = collectionView
         self.diffCalculator = CollectionViewDiffCalculator(collectionView: collectionView,
