@@ -17,13 +17,7 @@ class PreviewerCollectionViewCell: UICollectionViewCell {
 
     fileprivate var oldBounds: CGRect = CGRect.zero
 
-    fileprivate var imageView: UIImageView = UIImageView() {
-        didSet {
-            if let image = imageView.image {
-                imageView.frame = calculateRect(image: image, size: scrollView.bounds.size)
-            }
-        }
-    }
+    fileprivate var imageView: UIImageView = UIImageView()
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -54,7 +48,6 @@ class PreviewerCollectionViewCell: UICollectionViewCell {
         let isHeightChanged =  oldBounds.height != scrollView.bounds.height
 
         if (isWidthChanged || isHeightChanged) {
-
             oldBounds = scrollView.bounds
             imageView.frame = calculateRect(image: image, size: scrollView.bounds.size)
             scrollView.contentSize = imageView.frame.size
@@ -74,12 +67,20 @@ class PreviewerCollectionViewCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         imageView.image = nil
+        imageView.af_cancelImageRequest()
     }
 
     func configureFor(photo: Photo) {
         backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
         if let photoURLString = photo.imageURL {
-            imageView.af_setImage(withURL: photoURLString)
+            imageView.af_setImage(withURL: photoURLString, completion: {[weak self] data in
+
+                guard let strongSelf = self, let image = strongSelf.imageView.image else {
+                    return
+                }
+                strongSelf.imageView.frame = strongSelf.calculateRect(image: image, size: strongSelf.scrollView.bounds.size)
+                strongSelf.scrollView.contentSize = strongSelf.imageView.frame.size
+            })
         }
     }
 

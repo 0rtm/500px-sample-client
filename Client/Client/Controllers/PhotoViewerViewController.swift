@@ -34,7 +34,6 @@ class PhotoViewerViewController: UIViewController {
         setupTableView()
         setupCollectionView()
     }
-
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         super.willTransition(to: newCollection, with: coordinator)
 
@@ -64,7 +63,10 @@ class PhotoViewerViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         viewModel = PhotosViewModel(collectionView: collectionView, dataModel: dataModel)
-        viewModel.refresh()
+
+        DispatchQueue.main.async {[weak self] in
+            self?.viewModel.refresh()
+        }
     }
 
     fileprivate func close() {

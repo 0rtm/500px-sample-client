@@ -27,8 +27,10 @@ class PhotosViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.refresh()
-        dataModel.selectedIndex = nil
+        DispatchQueue.main.async {[weak self] in
+            self?.viewModel.refresh()
+            self?.dataModel.selectedIndex = nil
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

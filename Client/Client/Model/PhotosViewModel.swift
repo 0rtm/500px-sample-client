@@ -91,7 +91,7 @@ class PhotosViewModel: NSObject {
         } else {
             direction = .centeredVertically
         }
-
+    
         collectionView.scrollToItem(at:_selectedIndex, at: direction, animated: false)
     }
 }
