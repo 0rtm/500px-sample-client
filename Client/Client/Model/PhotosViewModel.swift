@@ -12,25 +12,19 @@ import Dwifft
 
 class PhotosViewModel: NSObject {
 
-    // Pagination
-    private var currentPage = 1
-    private let loadingLimit = 10
-
-    private let networking = Networking()
-
     // Presentation
     fileprivate let collectionView: UICollectionView
     fileprivate let diffCalculator: CollectionViewDiffCalculator<Int, Photo>
 
-    // Photos
-    fileprivate var photos: [Photo]
+    fileprivate let dataModel: PhotosDataModel
 
-    public init(collectionView: UICollectionView) {
+    var selectedIndex: IndexPath?
+
+    public init(collectionView: UICollectionView, dataModel: PhotosDataModel) {
         self.collectionView = collectionView
         self.diffCalculator = CollectionViewDiffCalculator(collectionView: collectionView,
                                                            initialSectionedValues: PhotosViewModel.sectionedPhotos(photos: []))
-        self.photos = []
-
+        self.dataModel = dataModel
         super.init()
     }
 
@@ -46,58 +40,59 @@ class PhotosViewModel: NSObject {
         return diffCalculator.value(atIndexPath: indexPath)
     }
 
+    func loadPhotos() {
+        dataModel.loadPhotos {[weak self] (photos) in
+            self?.updateDiffValues(photos)
+            self?.displaySelectedIndex()
+        }
+    }
+
+    func loadMorePhotos() {
+        dataModel.loadMorePhotos {[weak self] (photos) in
+            self?.updateDiffValues(photos)
+            self?.displaySelectedIndex()
+        }
+    }
+
+    func refresh() {
+        dataModel.storedPhotos {[weak self] (photos) in
+            self?.updateDiffValues(photos)
+            self?.displaySelectedIndex()
+        }
+    }
+
+    func isLastIndexPath(_ indexPath: IndexPath) -> Bool {
+
+        let isLastSection = indexPath.section == numberOfSections - 1
+        let isLastRow = indexPath.row == numberOfPhotosInSection(indexPath.section) - 1
+
+        return isLastSection && isLastRow
+    }
+
     fileprivate static func sectionedPhotos(photos: [Photo]) -> SectionedValues<Int, Photo> {
         let values:[(Int, [Photo])] = [(0, photos)]
         return SectionedValues(values)
     }
 
-
-    func loadPhotos() {
-        loadPage(completion: {[weak self] (photos: [Photo])  in
-            guard let strongSelf = self else { return }
-            let sectionedV = PhotosViewModel.sectionedPhotos(photos: photos)
-            strongSelf.diffCalculator.sectionedValues = sectionedV
-        })
+    fileprivate func updateDiffValues(_ photos: ([Photo])) {
+        let sectionedV = PhotosViewModel.sectionedPhotos(photos: photos)
+        diffCalculator.sectionedValues = sectionedV
     }
 
-    func loadMorePhotos() {
-        loadMore(completion: {[weak self] (photos: [Photo])  in
-            guard let strongSelf = self else { return }
-            let sectionedV = PhotosViewModel.sectionedPhotos(photos: photos)
-            strongSelf.diffCalculator.sectionedValues = sectionedV
-        })
-    }
-
-
-    fileprivate func loadPage(completion: @escaping ([Photo])->()) {
-        loadPage(pageNumber: currentPage, completion: completion)
-    }
-
-    fileprivate func loadMore(completion: @escaping ([Photo])->()) {
-        currentPage += 1
-
-        if currentPage > loadingLimit {
-            completion(photos)
+    fileprivate func displaySelectedIndex() {
+        guard let _selectedIndex = dataModel.selectedIndex else {
             return
         }
 
-        loadPage(pageNumber: currentPage, completion: completion)
-    }
+        let direction: UICollectionViewScrollPosition
 
-    func loadPage(pageNumber: Int, completion: @escaping ([Photo])->()) {
-        
-        networking.getPage(pageNumber: pageNumber){[weak self] (error, page) in
-
-            guard error == nil else {
-                print(error.debugDescription)
-                fatalError()
-            }
-
-            guard let _page = page, let strongSelf = self else {return}
-
-            self?.photos += _page.photos
-            completion(strongSelf.photos)
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            direction = layout.scrollDirection == .horizontal ? .centeredHorizontally : .centeredVertically
+        } else {
+            direction = .centeredVertically
         }
+
+        collectionView.scrollToItem(at:_selectedIndex, at: direction, animated: false)
     }
 }
 

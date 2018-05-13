@@ -10,13 +10,12 @@ import UIKit
 
 class PhotoViewerViewController: UIViewController {
 
-    var photosModel: PhotosViewModel!
-    var selectedPhoto: Photo! {
-        didSet {
-            presentable = selectedPhoto
-        }
-    }
-    var presentable: TablePresentable?
+    var viewModel: PhotosViewModel!
+    var selectedIndex: IndexPath?
+    var presentable: TablePresentable?// {
+//        return photosModel
+//    }
+    var dataModel: PhotosDataModel!
 
     @IBOutlet weak var infoTableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -24,7 +23,6 @@ class PhotoViewerViewController: UIViewController {
 
     fileprivate let infoCellId = "infoCell"
     fileprivate let spacing: CGFloat = 4.0
-
 
     fileprivate var prevIndexPathAtCenter: IndexPath?
 
@@ -38,9 +36,11 @@ class PhotoViewerViewController: UIViewController {
         setupTitle()
         setupTableView()
         setupCollectionView()
-        infoTableView.reloadData()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
 
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         super.willTransition(to: newCollection, with: coordinator)
@@ -70,16 +70,14 @@ class PhotoViewerViewController: UIViewController {
 
         collectionView.dataSource = self
         collectionView.delegate = self
-
-
-        photosModel = PhotosViewModel(collectionView: collectionView)
-        photosModel.loadPhotos()
+        viewModel = PhotosViewModel(collectionView: collectionView, dataModel: dataModel)
+        viewModel.loadPhotos()
     }
 
     fileprivate func close() {
+        dataModel.selectedIndex = currentIndexPath
         dismiss(animated: true, completion: nil)
     }
-
 }
 
 extension PhotoViewerViewController: UITableViewDataSource, UITableViewDelegate {
@@ -100,35 +98,30 @@ extension PhotoViewerViewController: UITableViewDataSource, UITableViewDelegate 
 extension PhotoViewerViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return photosModel.numberOfSections
+        return viewModel.numberOfSections
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photosModel.numberOfPhotosInSection(section)
+        return viewModel.numberOfPhotosInSection(section)
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PreviewerCollectionViewCell.reuseIdentifier, for: indexPath) as! PreviewerCollectionViewCell
 
-        let photo = photosModel.photo(atIndexPath: indexPath)
+        let photo = viewModel.photo(atIndexPath: indexPath)
         cell.backgroundColor = indexPath.row % 2 == 0 ? UIColor.red : UIColor.orange
         cell.configureFor(photo: photo)
 
         return cell
     }
 
-//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//
-//        let isLastSection = indexPath.section == photosModel.numberOfSections - 1
-//        let isLastRow = indexPath.row == photosModel.numberOfPhotosInSection(indexPath.section) - 1
-//
-//        let isLastCell = isLastSection && isLastRow
-//
-//        if isLastCell {
-//            requestMorePhotos()
-//        }
-//    }
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+
+        if viewModel.isLastIndexPath(indexPath) {
+            viewModel.loadMorePhotos()
+        }
+    }
 }
 
 extension PhotoViewerViewController: UICollectionViewDelegateFlowLayout {

@@ -13,8 +13,9 @@ class PhotosViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
 
-    fileprivate var photosModel: PhotosViewModel!
-    fileprivate var selectedPhoto: Photo?
+    fileprivate var viewModel: PhotosViewModel!
+    fileprivate var dataModel: PhotosDataModel!
+    fileprivate var selectedIndex: IndexPath?
 
     fileprivate let showPreviewSegueId = "showPreview"
 
@@ -22,6 +23,11 @@ class PhotosViewController: UIViewController {
         super.viewDidLoad()
         setupCollectionView()
         title = "Popular"
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.refresh()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -35,8 +41,8 @@ class PhotosViewController: UIViewController {
                 let previewVC = navVC.viewControllers.first as? PhotoViewerViewController else {
                 return
             }
-            previewVC.photosModel = photosModel
-            previewVC.selectedPhoto = selectedPhoto
+            previewVC.viewModel = viewModel
+            previewVC.dataModel = dataModel
         }
     }
 
@@ -50,12 +56,9 @@ class PhotosViewController: UIViewController {
             layout.delegate = self
         }
 
-        photosModel = PhotosViewModel(collectionView: collectionView)
-        photosModel.loadPhotos()
-    }
-
-    fileprivate func requestMorePhotos() {
-        photosModel.loadMorePhotos()
+        dataModel = PhotosDataModel()
+        viewModel = PhotosViewModel(collectionView: collectionView, dataModel: dataModel)
+        viewModel.loadPhotos()
     }
 }
 
@@ -63,18 +66,18 @@ class PhotosViewController: UIViewController {
 extension PhotosViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return photosModel.numberOfSections
+        return viewModel.numberOfSections
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photosModel.numberOfPhotosInSection(section)
+        return viewModel.numberOfPhotosInSection(section)
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
 
-        let photo = photosModel.photo(atIndexPath: indexPath)
+        let photo = viewModel.photo(atIndexPath: indexPath)
         cell.configureFor(photo: photo)
         
         return cell
@@ -82,18 +85,14 @@ extension PhotosViewController: UICollectionViewDelegate, UICollectionViewDataSo
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 
-        let isLastSection = indexPath.section == photosModel.numberOfSections - 1
-        let isLastRow = indexPath.row == photosModel.numberOfPhotosInSection(indexPath.section) - 1
-
-        let isLastCell = isLastSection && isLastRow
-
-        if isLastCell {
-            requestMorePhotos()
+        if (viewModel.isLastIndexPath(indexPath)) {
+             viewModel.loadMorePhotos()
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedPhoto = photosModel.photo(atIndexPath: indexPath)
+        selectedIndex = indexPath
+        dataModel.selectedIndex = selectedIndex
         performSegue(withIdentifier: showPreviewSegueId, sender: self)
     }
 }
@@ -108,7 +107,7 @@ extension PhotosViewController: PreservingAspectRatioLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView,
                    aspectRatioForCellAtIndexPath indexPath:IndexPath) -> CGFloat {
         
-        let photo = photosModel.photo(atIndexPath: indexPath)
+        let photo = viewModel.photo(atIndexPath: indexPath)
         return CGFloat(photo.aspectRatio)
     }
 
