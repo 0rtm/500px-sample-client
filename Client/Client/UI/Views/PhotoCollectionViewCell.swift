@@ -25,7 +25,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     }
 
     func configureFor(photo: Photo) {
-        if let photoURLString = photo.images.first?.httpsURL {
+        backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+        if let photoURLString = photo.imageURL {
             imageView.af_setImage(withURL: photoURLString)
         }
     }
