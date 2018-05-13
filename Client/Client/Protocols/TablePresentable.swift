@@ -7,7 +7,14 @@
 //
 
 import Foundation
+
+typealias TableItem = (String, String)
+
+struct Section {
+    let title: String
+    let items: [TableItem]
+}
+
 protocol TablePresentable {
-    typealias TableItem = (String, String)
-    func items() -> [TableItem]
+    var sections: [Section] { get }
 }

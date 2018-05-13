@@ -52,8 +52,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="fgP-ZS-CLd">
+                                <rect key="frame" x="0.0" y="88" width="375" height="406"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="TSi-Cm-JE4">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HeD-gO-vaD" userLabel="Divider">
+                                <rect key="frame" x="0.0" y="494" width="375" height="30"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Details" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dgd-iN-gdH">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="dgd-iN-gdH" firstAttribute="top" secondItem="HeD-gO-vaD" secondAttribute="top" id="7dN-Rk-qaR"/>
+                                    <constraint firstItem="dgd-iN-gdH" firstAttribute="leading" secondItem="HeD-gO-vaD" secondAttribute="leading" id="Kqk-Uc-T5U"/>
+                                    <constraint firstAttribute="height" constant="30" id="QtM-fi-f8j"/>
+                                    <constraint firstAttribute="bottom" secondItem="dgd-iN-gdH" secondAttribute="bottom" id="u4f-un-Ngs"/>
+                                    <constraint firstAttribute="trailing" secondItem="dgd-iN-gdH" secondAttribute="trailing" id="zFG-SS-Uoa"/>
+                                </constraints>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mwA-hL-VWg">
-                                <rect key="frame" x="0.0" y="615.66666666666663" width="375" height="162.33333333333337"/>
+                                <rect key="frame" x="0.0" y="524" width="375" height="254"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="infoCell" textLabel="tOh-OM-q2f" detailTextLabel="1ns-BH-FxW" style="IBUITableViewCellStyleValue1" id="khD-Mc-abN">
@@ -82,28 +112,20 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="fgP-ZS-CLd">
-                                <rect key="frame" x="0.0" y="88" width="375" height="527.66666666666663"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="TSi-Cm-JE4">
-                                    <size key="itemSize" width="50" height="50"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells/>
-                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="9bX-Az-KLS" firstAttribute="trailing" secondItem="fgP-ZS-CLd" secondAttribute="trailing" id="Ezg-mt-4dw"/>
-                            <constraint firstItem="fgP-ZS-CLd" firstAttribute="height" secondItem="OtF-3i-KKM" secondAttribute="height" multiplier="65%" id="Fzm-z7-vvx"/>
-                            <constraint firstItem="mwA-hL-VWg" firstAttribute="top" secondItem="fgP-ZS-CLd" secondAttribute="bottom" id="K4u-s7-E06"/>
+                            <constraint firstItem="HeD-gO-vaD" firstAttribute="leading" secondItem="9bX-Az-KLS" secondAttribute="leading" id="IS1-LP-tP3"/>
+                            <constraint firstItem="mwA-hL-VWg" firstAttribute="top" secondItem="HeD-gO-vaD" secondAttribute="bottom" id="KU5-sO-j82"/>
+                            <constraint firstItem="fgP-ZS-CLd" firstAttribute="height" secondItem="OtF-3i-KKM" secondAttribute="height" multiplier="50%" id="May-Pb-XQB"/>
                             <constraint firstItem="fgP-ZS-CLd" firstAttribute="leading" secondItem="9bX-Az-KLS" secondAttribute="leading" id="Sos-Fk-hto"/>
                             <constraint firstItem="mwA-hL-VWg" firstAttribute="leading" secondItem="9bX-Az-KLS" secondAttribute="leading" id="VNQ-0N-UYR"/>
                             <constraint firstItem="9bX-Az-KLS" firstAttribute="bottom" secondItem="mwA-hL-VWg" secondAttribute="bottom" id="dXO-mN-ybO"/>
                             <constraint firstItem="fgP-ZS-CLd" firstAttribute="top" secondItem="9bX-Az-KLS" secondAttribute="top" id="j8K-2T-H1Y"/>
                             <constraint firstItem="9bX-Az-KLS" firstAttribute="trailing" secondItem="mwA-hL-VWg" secondAttribute="trailing" id="ji4-bn-0Xp"/>
+                            <constraint firstItem="HeD-gO-vaD" firstAttribute="top" secondItem="fgP-ZS-CLd" secondAttribute="bottom" id="lHG-k5-5G7"/>
+                            <constraint firstItem="9bX-Az-KLS" firstAttribute="trailing" secondItem="HeD-gO-vaD" secondAttribute="trailing" id="ppu-Gr-fO7"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="9bX-Az-KLS"/>
                     </view>
@@ -121,7 +143,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GOd-hW-thn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1826" y="40"/>
+            <point key="canvasLocation" x="1824.8" y="39.90147783251232"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="0EA-XG-xhb">

@@ -70,7 +70,7 @@ class PhotosViewModel: NSObject {
     }
 
     fileprivate static func sectionedPhotos(photos: [Photo]) -> SectionedValues<Int, Photo> {
-        let values:[(Int, [Photo])] = [(0, photos)]
+        let values: [(Int, [Photo])] = [(0, photos)]
         return SectionedValues(values)
     }
 
@@ -95,5 +95,3 @@ class PhotosViewModel: NSObject {
         collectionView.scrollToItem(at:_selectedIndex, at: direction, animated: false)
     }
 }
-
-

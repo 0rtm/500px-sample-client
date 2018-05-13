@@ -14,15 +14,13 @@ protocol DataProvider {
 
 class PhotosDataModel {
 
-    // Pagination
     private var currentPage = 1
     private let loadingLimit = 10
 
     private let networking = Networking()
 
     var selectedIndex: IndexPath?
-    
-    // Photos
+
     fileprivate var photos: [Photo] = []
 
     func loadPhotos(completion: @escaping ([Photo])->()) {
@@ -71,6 +69,4 @@ class PhotosDataModel {
             completion(strongSelf.photos)
         }
     }
-
-
 }

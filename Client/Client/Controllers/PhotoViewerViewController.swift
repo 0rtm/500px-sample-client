@@ -12,14 +12,11 @@ class PhotoViewerViewController: UIViewController {
 
     var viewModel: PhotosViewModel!
     var selectedIndex: IndexPath?
-    var presentable: TablePresentable?// {
-//        return photosModel
-//    }
+    var presentable: TablePresentable?
     var dataModel: PhotosDataModel!
 
     @IBOutlet weak var infoTableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
-
 
     fileprivate let infoCellId = "infoCell"
     fileprivate let spacing: CGFloat = 4.0
@@ -74,19 +71,32 @@ class PhotoViewerViewController: UIViewController {
         dataModel.selectedIndex = currentIndexPath
         dismiss(animated: true, completion: nil)
     }
+
+    fileprivate func showInfoAbout(_ photo: Photo){
+        presentable = photo
+        infoTableView.reloadData()
+    }
 }
 
 extension PhotoViewerViewController: UITableViewDataSource, UITableViewDelegate {
 
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return presentable?.sections.count ?? 0
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presentable?.items().count ?? 0
+        return presentable?.sections[section].items.count ?? 0
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return presentable?.sections[section].title
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: infoCellId, for: indexPath)
-        let info = presentable?.items()[indexPath.row]
-        cell.textLabel?.text = info?.0
-        cell.detailTextLabel?.text = info?.1
+        let info = (presentable?.sections[indexPath.section].items[indexPath.row])!
+        cell.textLabel?.text = info.0
+        cell.detailTextLabel?.text = info.1
         return cell
     }
 }
@@ -117,6 +127,17 @@ extension PhotoViewerViewController: UICollectionViewDelegate, UICollectionViewD
         if viewModel.isLastIndexPath(indexPath) {
             viewModel.loadMorePhotos()
         }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+
+        guard let currentIndex = currentIndexPath else {
+            return
+        }
+
+        let photo = viewModel.photo(atIndexPath: currentIndex)
+        dataModel.selectedIndex = currentIndexPath
+        showInfoAbout(photo)
     }
 }
 
