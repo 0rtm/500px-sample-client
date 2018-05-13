@@ -38,10 +38,6 @@ class PhotoViewerViewController: UIViewController {
         setupCollectionView()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         super.willTransition(to: newCollection, with: coordinator)
 
@@ -71,7 +67,7 @@ class PhotoViewerViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         viewModel = PhotosViewModel(collectionView: collectionView, dataModel: dataModel)
-        viewModel.loadPhotos()
+        viewModel.refresh()
     }
 
     fileprivate func close() {
