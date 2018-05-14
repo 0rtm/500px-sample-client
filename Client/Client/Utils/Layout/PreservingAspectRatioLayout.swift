@@ -23,9 +23,6 @@ class PreservingAspectRatioLayout: UICollectionViewLayout {
 
     weak var delegate: PreservingAspectRatioLayoutDelegate!
 
-    fileprivate var numberOfColumns = 2
-    fileprivate var cellPadding: CGFloat = 6
-
     fileprivate var cache = [UICollectionViewLayoutAttributes]()
 
     fileprivate var contentHeight: CGFloat = 0
@@ -51,56 +48,44 @@ class PreservingAspectRatioLayout: UICollectionViewLayout {
     }
 
     override func prepare() {
-        // 1
+
         guard cache.isEmpty == true, let collectionView = collectionView else {
             return
         }
 
         var currentRowH: CGFloat = 0.0
 
-        var row = Row()
-        row.maxH = maxRowHeight
-        row.maxW = contentWidth
-        row.spacer = spacing
+        let row = Row(maxWidth: contentWidth, maxHeight: maxRowHeight, itemSpacing: spacing)
 
         for section in 0..<collectionView.numberOfSections {
 
             for item in 0 ..< collectionView.numberOfItems(inSection: section) {
 
-                let indexPath = IndexPath(item: item, section: 0)
-
+                let indexPath = IndexPath(item: item, section: section)
                 let aspectRatio = delegate.collectionView(collectionView, aspectRatioForCellAtIndexPath: indexPath)
 
-                row.items.append((indexPath, aspectRatio))
+                row.addItem(IndexPathWithAspectRatio(indexPath: indexPath, aspectRatio: aspectRatio))
 
                 if row.isRowComplete() {
-                    let layouts = row.layout()
-                    for layout in layouts {
-                        let attributes = UICollectionViewLayoutAttributes(forCellWith: layout.0)
-                        attributes.frame = layout.1
-                        attributes.frame.origin.y = currentRowH
-                        cache.append(attributes)
-                    }
 
-                    currentRowH += row.rowH()
-                    row = Row()
-                    row.maxH = maxRowHeight
-                    row.maxW = contentWidth
-                    row.spacer = spacing
+                    let layouts = row.layoutCompleteRow()
+
+                    cacheLayouts(layouts, currentRowH)
+
+                    currentRowH += layouts.rowHeight
+                    row.clearItems()
 
                 } else {
 
-                    if item == collectionView.numberOfItems(inSection: 0)-1 {
+                    let isLastItem = item == collectionView.numberOfItems(inSection: 0) - 1
+
+                    if  isLastItem {
 
                         let layouts = row.layoutIncompleteRow()
-                        //
-                        for layout in layouts {
-                            let attributes = UICollectionViewLayoutAttributes(forCellWith: layout.0)
-                            attributes.frame = layout.1
-                            attributes.frame.origin.y = currentRowH
-                            cache.append(attributes)
-                        }
-                        currentRowH += layouts.first!.1.height + spacing
+
+                        cacheLayouts(layouts, currentRowH)
+
+                        currentRowH += layouts.rowHeight
                     }
                 }
             }
@@ -109,6 +94,18 @@ class PreservingAspectRatioLayout: UICollectionViewLayout {
         }
     }
 
+    fileprivate func cacheLayouts(_ layouts: RowLayout, _ currentRowH: CGFloat) {
+        for layout in layouts.items {
+            cacheAttributes(layout, currentRowH)
+        }
+    }
+
+    fileprivate func cacheAttributes(_ layout: IndexPathWithFrame, _ currentRowH: CGFloat) {
+        let attributes = UICollectionViewLayoutAttributes(forCellWith: layout.indexPath)
+        attributes.frame = layout.frame
+        attributes.frame.origin.y = currentRowH
+        cache.append(attributes)
+    }
 
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
 
