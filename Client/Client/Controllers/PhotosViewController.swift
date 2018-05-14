@@ -22,7 +22,7 @@ class PhotosViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        title = "Popular"
+        setupTitle()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -47,6 +47,10 @@ class PhotosViewController: UIViewController {
             previewVC.viewModel = viewModel
             previewVC.dataModel = dataModel
         }
+    }
+
+    fileprivate func setupTitle() {
+        title = "Popular"
     }
 
     fileprivate func setupCollectionView() {

@@ -11,7 +11,6 @@ import UIKit
 class PhotoViewerViewController: UIViewController {
 
     var viewModel: PhotosViewModel!
-    var selectedIndex: IndexPath?
     var presentable: TablePresentable?
     var dataModel: PhotosDataModel!
 

@@ -21,7 +21,7 @@ enum Route {
             
         case .getPhotos(let page):
             let path = "v1/photos"
-            let params = ["image_size": "4", "page": String(page), "consumer_key": consumerKey]
+            let params = ["feature": "popular", "image_size": "4", "page": String(page), "consumer_key": consumerKey]
 
             return RequestProperties(path: path, method: .get, headers: nil, params: params)
         }
