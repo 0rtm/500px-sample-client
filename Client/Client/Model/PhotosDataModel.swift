@@ -8,31 +8,28 @@
 
 import Foundation
 
-protocol DataProvider {
-
-}
-
 class PhotosDataModel {
-
-    private var currentPage = 1
-    private let loadingLimit = 10
-
-    private let networking = Networking()
 
     var selectedIndex: IndexPath?
 
+    fileprivate var currentPage = 1
+    fileprivate let loadingLimit = 100
+
+    fileprivate let networking = Networking()
+    fileprivate let request: Request
+
     fileprivate var photos: [Photo] = []
 
+    init() {
+        request = Request(networking: networking)
+    }
+
     func loadPhotos(completion: @escaping ([Photo])->()) {
-        loadPage(completion: {(photos: [Photo])  in
-            completion(photos)
-        })
+        loadPage(completion: completion)
     }
 
     func loadMorePhotos(completion: @escaping ([Photo])->()) {
-        loadMore(completion: {(photos: [Photo])  in
-            completion(photos)
-        })
+        loadMore(completion: completion)
     }
 
     func storedPhotos(completion: @escaping ([Photo])->()) {
@@ -56,16 +53,17 @@ class PhotosDataModel {
 
     func loadPage(pageNumber: Int, completion: @escaping ([Photo])->()) {
 
-        networking.getPage(pageNumber: pageNumber){[weak self] (error, page) in
+        request.getPhotos(pageNumber: pageNumber){[weak self] (error, page) in
 
             guard error == nil else {
                 print(error.debugDescription)
-                fatalError()
+                completion([])
+                return
             }
 
             guard let _page = page, let strongSelf = self else {return}
 
-            self?.photos += _page.photos
+            strongSelf.photos += _page.photos
             completion(strongSelf.photos)
         }
     }

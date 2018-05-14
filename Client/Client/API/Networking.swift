@@ -14,22 +14,26 @@ enum NetworkingError: Error {
     case serializationError()
 }
 
+struct RequestProperties {
+    let path: String
+    let method: HTTPMethod
+    let headers: HTTPHeaders?
+    let params: Parameters?
+}
+
 struct Networking {
 
-    let consumerKey = "L248TO2cgEpTMw5mUdo74ntKIvR4fOsIBeCGJFBV"
+    fileprivate let baseURL = URL(string: "https://api.500px.com")
 
-    func getPage(pageNumber: Int, completion : @escaping (Error?, Page?)->()) {
+    func request<T>(requestProperties: RequestProperties, completion: @escaping (Error?,T?)->()) where T: Decodable {
 
-        let url = URL(string: "https://api.500px.com/v1/photos")!
-        let params = ["image_size": "4",
-                      "page": String(pageNumber),
-                      "consumer_key": consumerKey]
+        guard let URL = URL(string: requestProperties.path, relativeTo: baseURL) else {
+            fatalError("Invalid request url")
+        }
 
-        Alamofire.request(url, method: .get, parameters: params, headers: nil)
+        Alamofire.request(URL, method: requestProperties.method, parameters: requestProperties.params, headers: requestProperties.headers)
             .validate()
             .responseJSON { (response) in
-
-                print(response)
 
                 guard response.result.isSuccess else {
                     let error = NetworkingError.genericError(errorDesc: response.error.debugDescription)
@@ -46,8 +50,8 @@ struct Networking {
                 }
 
                 do {
-                    let page = try decoder.decode(Page.self, from: data)
-                    completion(nil, page)
+                    let decoded = try decoder.decode(T.self, from: data)
+                    completion(nil, decoded)
                 } catch {
                     let error = NetworkingError.serializationError()
                     completion(error, nil)

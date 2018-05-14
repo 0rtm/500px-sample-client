@@ -18,8 +18,6 @@ class PhotosViewModel: NSObject {
 
     fileprivate let dataModel: PhotosDataModel
 
-    var selectedIndex: IndexPath?
-
     public init(collectionView: UICollectionView, dataModel: PhotosDataModel) {
         self.collectionView = collectionView
         self.diffCalculator = CollectionViewDiffCalculator(collectionView: collectionView,
